@@ -1,0 +1,7 @@
+RDS_DATABASE_TYPE: postgresql
+RDS_DBAPI: psycopg2
+RDS_HOST: localhost
+RDS_USER: postgres
+RDS_PASSWORD: password
+RDS_DATABASE: postgres
+RDS_PORT: 5432
