@@ -8,34 +8,27 @@ class DataCleaning:
 
     validator = vld.Validate()
 
-    # method to clean user data which is coming from legacy_user table. uploaded in dim_user
+    '''method to clean user data which is coming from legacy_user table. uploaded in dim_user'''
     def clean_user_data(self,df):
-       
         self.validator.check_null(df)
         self.validator.validate_string(df, 'first_name')
-       
         self.validator.validate_string(df, 'last_name')
-       
         df.drop(df.loc[df['country'].str.contains('NULL') == True].index, inplace =True, axis = 0)
         df.drop(df.loc[df['country'].str.contains(r'[0-9]') == True].index, inplace =True, axis = 0)
         df.drop(df.loc[df['email_address'].str.contains('NULL') == True].index, inplace =True, axis = 0)
-        
         self.validator.validate_email(df, 'email_address')
-
         df['phone_number'].replace(['(',')',"+",".","-"]," ",inplace = True)
         df.drop(df.loc[df['phone_number'].str.contains('NULL') == True].index, inplace =True, axis = 0)
         df.drop(df.loc[df['phone_number'].str.contains(r'[a-z]|[A-Z]') == True].index, inplace =True, axis = 0)
         #df.drop(df.loc[df['join_date'].str.contains('-') == False].index,axis = 0,inplace = True)
-
         self.validator.validate_date(df, 'join_date')
         self.validator.validate_date(df, 'date_of_birth')
         df.drop(df.loc[df['country_code'].str.len() != 2].index,axis = 0,inplace = True)
-        
         return df
 
         
         
-   # This method is cleaning card data pdf file called card_details.pdf. uploading it into dim_card_details.
+    ''' This method is cleaning card data pdf file called card_details.pdf. uploading it into dim_card_details.'''
     def clean_card_data(self, dataframe):
         list_of_df = []
         for card_df in dataframe:
@@ -54,10 +47,10 @@ class DataCleaning:
         date_result = dt_rgx.search(dt)
         return date_result
     
-# This method is clean store data getting it from API. uploading it into dim_store_details.
+    '''This method is clean store data getting it from API. uploading it into dim_store_details.'''
     def called_clean_store_data(self, store_df):
         store_df.pop('lat')
-        store_df['latitude'].replace(np.nan,'N/A',inplace = True)
+        #store_df['longitude'].replace('N/A','null',inplace = True)
         #self.validator.check_null(store_df)
         #store_df.drop(store_df.loc[store_df['longitude'].str.contains(r'[a-z]|[A-Z]') == True].index, inplace =True, axis = 0)
         #store_df.drop(store_df.loc[store_df['latitude'].str.contains(r'[a-z]|[A-Z]') == True].index, inplace =True, axis = 0)
@@ -72,9 +65,8 @@ class DataCleaning:
         store_df['continent'].replace('eeAmerica','America',inplace = True)
         return store_df
 
-    # This method is clean product data aws s3. uploading it into dim_products.
+    '''This method is clean product data aws s3. uploading it into dim_products.'''
     def clean_product_data(self,product_df):
-         
         self.validator.check_null(product_df)
         product_df['product_price'] = product_df['product_price'].str.lstrip('£')
         self.validator.validate_date(product_df, 'date_added')
@@ -102,14 +94,14 @@ class DataCleaning:
             classification = 'Truck_required'
         return classification
     
-    # This method calls weight_conversion method which checks the regular expression and converts the weight column into kg or in float.
-    # This column is in product table.
+    ''' This method calls weight_conversion method which checks the regular expression and converts the weight column into kg or in float.
+     This column is in product table.'''
     def convert_product_weights(self,product_df):
         product_df.drop(product_df.loc[product_df['weight'].str.match(r'(\d*\.?\d+)(kg|g|l|ml)') == False].index,axis = 0,inplace = True)
         product_df['weight'] = product_df['weight'].apply(lambda x: self.weight_conversion(x))
     
-    # This method takes the weight from s3_data dataframe. compiles the expression. search for it. If it gets dicides it into 2 groups
-    # group 1 is converted into float. and group 2 is for unit check. If unit is g, ml then divide the weight by 1000.       
+    ''' This method takes the weight from s3_data dataframe. compiles the expression. search for it. If it gets dicides it into 2 groups
+     group 1 is converted into float. and group 2 is for unit check. If unit is g, ml then divide the weight by 1000. '''      
     def weight_conversion(self,weight_str):
         weight_rgx = re.compile(r'(\d*\.?\d+)(kg|g|l|ml)')
         mo = weight_rgx.search(weight_str)
@@ -118,17 +110,16 @@ class DataCleaning:
             wn = wn/1000
         return wn
 
-    # This method cleans order data. deleted 3 columns which were null.
+    ''' This method cleans order data. deleted 3 columns which were null.'''
     def clean_order_data(self,order_df):
         order_df = order_df.drop(['first_name','last_name','1'], axis = 1)
         self.validator.check_null(order_df)
         return order_df
 
-    # This method cleans the date data which got it from url.
+    ''' This method cleans the date data which got it from url.'''
     def clean_date_data(self,date_data):
-    # cleans data. check valid date and month is entered.
+        ''' cleans data. check valid date and month is entered.'''
         self.validator.check_null(date_data)
-        
         self.validator.validate_number(date_data,'month')
         self.validator.validate_number(date_data,'year')
         self.validator.validate_number(date_data,'day')
