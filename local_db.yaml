@@ -4,4 +4,5 @@ RDS_HOST: localhost
 RDS_USER: postgres
 RDS_PASSWORD: password
 RDS_DATABASE: postgres
+RDS_TARGET_DATABASE: Sales_Data
 RDS_PORT: 5432

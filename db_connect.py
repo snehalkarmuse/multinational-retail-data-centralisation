@@ -9,7 +9,7 @@ from sqlalchemy import text
 class DatabaseConnector:
     '''Read database credentials to get from yaml file.'''
     def read_db_creds(self):
-        with open('db_creds.yaml', 'r') as f:
+        with open('local_db.yaml', 'r') as f:
             #df = pd.json_normalize(safe_load(f))
             cd = safe_load(f)
         return cd
@@ -19,6 +19,10 @@ class DatabaseConnector:
         cd = self.read_db_creds()
         cd['RDS_PORT'] = str(cd['RDS_PORT'])
         self.db_engine = create_engine(cd['RDS_DATABASE_TYPE']+"+"+cd['RDS_DBAPI']+"://"+cd['RDS_USER']+":"+cd['RDS_PASSWORD']+"@"+cd['RDS_HOST']+":"+cd['RDS_PORT']+"/"+cd['RDS_DATABASE']) 
+        self.db_engine_target = create_engine(
+            cd['RDS_DATABASE_TYPE']+"+"+cd['RDS_DBAPI']+"://"+cd['RDS_USER']+":"+cd['RDS_PASSWORD']
+            +"@"+cd['RDS_HOST']+":"+cd['RDS_PORT']+"/"+cd['RDS_TARGET_DATABASE']
+            )
         #print(self.db_engine)
         return self.db_engine
     
@@ -34,7 +38,7 @@ class DatabaseConnector:
         
     '''This method takes table name and dataframe.Upload it where schema is public and we are replacing the data instead of appending it. Not adding index to records.'''
     def upload_to_db(self,df,table_name):
-        df.to_sql(table_name,self.db_engine,schema='public',if_exists='replace',index = False)
+        df.to_sql(table_name,self.db_engine_target,schema='public',if_exists='replace',index = False)
 
 '''created instance of the class DatabaseConnector. Initializing the engine. Lising tables in the database'''
 dbconnector = DatabaseConnector()

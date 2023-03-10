@@ -50,17 +50,9 @@ class DataCleaning:
     '''This method is clean store data getting it from API. uploading it into dim_store_details.'''
     def called_clean_store_data(self, store_df):
         store_df.pop('lat')
-        #store_df['longitude'].replace('N/A','null',inplace = True)
-        #self.validator.check_null(store_df)
-        #store_df.drop(store_df.loc[store_df['longitude'].str.contains(r'[a-z]|[A-Z]') == True].index, inplace =True, axis = 0)
-        #store_df.drop(store_df.loc[store_df['latitude'].str.contains(r'[a-z]|[A-Z]') == True].index, inplace =True, axis = 0)
         store_df.drop(store_df.loc[store_df['store_code'].str.contains('NULL') == True].index, inplace =True, axis = 0)
         self.validator.validate_number(store_df, 'staff_numbers')
-        #self.validator.validate_string(store_df, 'continent')
         self.validator.validate_date(store_df, 'opening_date')  
-        #store_df.drop(store_df.loc[store_df['country_code'].str.len() != 2].index,axis = 0,inplace = True)
-        #store_df.drop(store_df.loc[store_df['country_code'].str.contains(r'[0-9]') == True].index, inplace =True, axis = 0)
-        #store_df.drop(store_df.loc[store_df['continent'].str.contains(r'[0-9]') == True].index, inplace =True, axis = 0)
         store_df['continent'].replace('eeEurope','Europe',inplace = True)
         store_df['continent'].replace('eeAmerica','America',inplace = True)
         return store_df

@@ -28,12 +28,8 @@ class Validate:
     
     def validate_date(self,df,column_name):
         self.drop_invld_rows(df, df[column_name].str.match('NULL'))
-        # df.drop(df.loc[df[column_name].str.contains('-') == False].index,axis = 0,inplace = True)
-        df[column_name] = df[column_name].astype('datetime64[ns]')
-        df[column_name] = pd.to_datetime(df[column_name]).dt.normalize()
-        df[column_name] = pd.to_datetime(df[column_name]).dt.date
-        #self.drop_invld_rows(df, df[column_name].str.contains(r'[a-z]|[A-Z]'))
-        
+        df[column_name] = pd.to_datetime(df[column_name],errors = 'coerce').dt.date
+        self.drop_invld_rows(df,df[column_name].isnull())
         return df
     
     def validate_email(self,df,column_name):
