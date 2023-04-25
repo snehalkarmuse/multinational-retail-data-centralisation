@@ -1,3 +1,4 @@
+![alt text](https://docs.toonboom.com/help/harmony-12/paint/Content/Resources/Images/HAR/Stage/Network/Animation-network.jpg)
 # multinational-retail-data-centralisation
 - Created three classes, DataExtractor, DataConnector, DataCleaning.
 - Imported yaml module.
