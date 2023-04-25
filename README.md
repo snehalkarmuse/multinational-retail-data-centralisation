@@ -1,4 +1,4 @@
-![alt text](https://docs.toonboom.com/help/harmony-12/paint/Content/Resources/Images/HAR/Stage/Network/Animation-network.jpg)
+
 # multinational-retail-data-centralisation
 - Created three classes, DataExtractor, DataConnector, DataCleaning.
 - Imported yaml module.
@@ -21,3 +21,5 @@
   The link gets the file on the aws s3. Created s3 object. convered json response into dataframe. For product data.
 - extract_from_json_file method extract data from json file.
 - cleaned data using Pandas. Upload it into appropriate table.
+
+![alt text](https://docs.toonboom.com/help/harmony-12/paint/Content/Resources/Images/HAR/Stage/Network/Animation-network.jpg)
